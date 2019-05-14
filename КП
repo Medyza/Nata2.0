@@ -1,0 +1,101 @@
+#include "pch.h"
+#include <iostream>
+#include <string>
+#include <time.h>
+
+using namespace std;
+
+int compChoose(int stones);
+int userChoose(int stones);
+int random()
+{
+	int random;
+	random = (1+rand() % 5 );
+	return random;
+}
+void Intructions()
+{
+	setlocale(LC_ALL, "Russian");
+	cout << "Эта программа играет в игру Nim с пользователем \n"<<endl;
+	cout << "Сначала пользователь вводит количество камней\n" << endl;
+	cout << "Игроки могу забрать(от 1 до 3)\n" << endl;
+	cout << "Затем компьютер заберет еще от 1 до 3\n" << endl;
+	cout << "Игрок, который заберет последний камень - проиграет\n" << endl;
+	
+}
+int compChoose(int stones)
+// Возвращает случайное число от 1 до 3, представляющее выбор компьютера
+{
+	int choice; //Представляет выбор компьютера
+	do {
+		choice = (random() % 5) + 1;
+	} while (stones - choice <= 1);
+	return choice;
+}
+int main()
+{
+	srand((unsigned)time(NULL));
+	
+	Intructions();
+
+	bool winner = false;  //Переменная указывает, когда у нас есть победитель
+	int stones = 1+(rand() % 10);
+	int computeChoose; //Переменная представляет выбор компьютера
+	
+	
+	cout << "Добро пожаловать в игру Nim.  У нас есть " << stones << " камня." << endl;
+
+	while (!winner)
+	{
+
+		cout << "Введите, сколько вы хотели бы забрать: " << endl;
+		//Пользователь делает выбор
+		stones -= userChoose(stones);
+		cout << "Количество камней которые остались" << stones << ".\n\n" << endl;
+		if (stones == 1)
+		{
+			winner = true;
+			cout << "Ты победил!" << endl;
+		}
+		else
+		{
+			//Поворот компьютера
+			computeChoose = compChoose(stones);
+			stones -= computeChoose;
+			cout << "Компьютер выбирает" << computeChoose << endl;
+			cout << "Количество камней которое осталось " << stones << ".\n\n" << endl;
+			if (stones == 1)
+			{
+				winner = true;
+				cout << "Компьютер выигрывает" << endl;
+			}
+		}
+	}
+}
+int userChoose(int stones)
+{
+	//Взаимодействует с пользователем, предоставляя возможность выбора для игры Nim
+	int choice;
+	cout << "\t\t\t\t\t";
+	cin >> choice;
+	//Цикл, пока не сделан правильный выбор
+	while (choice < 1 || choice > 5|| stones - choice <= 0)
+	{
+		if (choice < 1 || choice > 5) //Можно выбрать только от 1 до 3
+		{
+			cout << "Ваш выбор должен быть от 1 до 5" << endl;
+			cout << "Другой выбор: " << endl;
+			cout << "\t\t\t\t\t";
+			cin >> choice;
+		}
+		else if (stones - choice <= 1) //Пользователь взял слишком много маркеров
+		{
+			cout << "Вы должны оставить хотя бы один камень" << endl;
+			cout << " Введите другой выбор:" << endl;
+			cout << "\t\t\t\t\t";
+			cin >> choice;
+		}
+		return choice;
+	}
+	return choice;
+}
